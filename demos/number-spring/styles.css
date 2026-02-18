@@ -1,0 +1,72 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Space Mono", monospace;
+  background: linear-gradient(140deg, #f9efe5, #d7e7de);
+  color: #102131;
+}
+
+.layout {
+  width: min(760px, calc(100vw - 40px));
+  margin: 40px auto;
+}
+
+.back {
+  text-decoration: none;
+  font-size: 14px;
+  color: #2f5b67;
+}
+
+h1 {
+  margin: 14px 0 8px;
+}
+
+p {
+  margin: 0 0 18px;
+}
+
+.card {
+  margin-top: 12px;
+  padding: 18px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(16, 33, 49, 0.14);
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 4px;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.value-row {
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.meter {
+  margin-top: 10px;
+  width: 100%;
+  height: 14px;
+  border-radius: 999px;
+  background: #cedee6;
+  overflow: hidden;
+}
+
+.fill {
+  width: 50%;
+  height: 100%;
+  background: #177ba5;
+  transition: width 120ms linear;
+}

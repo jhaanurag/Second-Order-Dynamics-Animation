@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Moving Box Demo</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <a class="back" href="../../index.html">Back</a>
+      <h1>Moving Box (Simple)</h1>
+      <p>Click on the track to set a destination. The box glides with spring dynamics.</p>
+
+      <div id="track" class="track" role="button" tabindex="0" aria-label="Animation track">
+        <div id="target" class="target"></div>
+        <div id="box" class="box"></div>
+      </div>
+
+      <div class="values">
+        <span>Target X: <strong id="targetValue">0</strong></span>
+        <span>Animated X: <strong id="animatedValue">0.00</strong></span>
+      </div>
+    </main>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

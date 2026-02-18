@@ -1,34 +1,120 @@
-# Second Order Dynamics Animation
+# motionspring
 
-This project is a simple web-based demo that visualizes second-order dynamics using JavaScript and HTML. A follower smoothly tracks a target point using a physics-based motion model.
+A lightweight npm package for second-order spring animation of numbers and vectors.
 
-## Features
-- Smooth motion following using second-order dynamics.
-- Adjustable parameters for frequency (f), damping (z), and response (r).
-- Real-time updates using sliders and input fields.
-- Minimalistic UI with interactive controls.
+## Requirements
 
-## Roadmap
-1. Refactor to allow easy use with different frameworks with a simple API.
-2. Optimize performance & animations in case of framedrops.
+- Node.js `>=18`
+- ESM runtime or bundler support
 
-## Technologies Used
-- HTML5
-- CSS3
-- JavaScript (ES6+)
+## Install
 
-## How It Works
-- The target follows the mouse position.
-- The follower moves towards the target using a second-order dynamic system.
-- Users can adjust:
-  - **Frequency (f):** Controls how fast the follower responds.
-  - **Damping (z):** Controls overshoot and oscillations.
-  - **Response (r):** Controls acceleration response.
+```bash
+npm install motionspring
+```
 
-## Usage
-1. Open `index.html` in a browser.
-2. Move the mouse to see the circle move.
-3. Adjust the control sliders to see the effect on motion.
+## Exports
 
-## License
-This project is open-source and available for use under the MIT License.
+- `SecondOrderDynamics`
+- `Vector2`
+- `createAnimator`
+
+## Quick Start
+
+```js
+import { createAnimator } from "motionspring";
+
+let target = 100;
+
+const animator = createAnimator({
+  initialValue: 0,
+  frequency: 2.5,
+  damping: 0.65,
+  response: 1,
+  updateSource: () => target,
+  onUpdate: (value) => {
+    element.textContent = value.toFixed(2);
+  },
+});
+
+animator.start();
+```
+
+## Vector Example
+
+```js
+import { Vector2, createAnimator } from "motionspring";
+
+let pointer = new Vector2(0, 0);
+
+const animator = createAnimator({
+  initialValue: pointer,
+  updateSource: () => pointer,
+  onUpdate: (position) => {
+    element.style.transform = `translate(${position.x}px, ${position.y}px)`;
+  },
+});
+
+animator.start();
+window.addEventListener("pointermove", (event) => {
+  pointer = new Vector2(event.clientX, event.clientY);
+});
+```
+
+## Demo Gallery
+
+The landing page (`index.html`) runs interactive demos with shared global spring controls.
+
+Landing page demos:
+
+- `demos/toggle-card`
+- `demos/number-spring`
+- `demos/mouse-follower`
+
+Standalone demo folders:
+
+- `demos/moving-box`
+- `demos/toggle-card`
+- `demos/number-spring`
+- `demos/mouse-follower`
+
+Run locally:
+
+```bash
+npm run demo
+```
+
+Then open `http://localhost:4173`.
+
+## Docs
+
+- API reference: `docs/api.md`
+- Demo guide: `docs/demos.md`
+- Publishing guide: `docs/publishing.md`
+
+## Development
+
+```bash
+npm test
+```
+
+Package validation (tests + pack dry run):
+
+```bash
+npm run check
+```
+
+## Publish to npm
+
+1. Ensure you are logged in: `npm whoami`
+2. Bump version in `package.json`
+3. Run `npm run check`
+4. Publish: `npm publish`
+
+`publishConfig.access` is already set to `public` in `package.json`.
+
+## Notes for Production Use
+
+- Pass stable `deltaTime` values to `step(...)` in non-RAF environments.
+- Tune `frequency`, `damping`, and `response` based on interaction intent.
+- Clamp downstream UI values when mapping animated output to CSS properties.

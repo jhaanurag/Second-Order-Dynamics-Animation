@@ -1,48 +1,632 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P016N56HE4"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-P016N56HE4');
-    </script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Second Order Dynamics</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="follower"></div>
-    <div class="target"></div>
-    
-    <div class="controls">
-        <div class="control-group">
-            <label>Frequency (f)</label>
-            <div class="input-row">
-                <input type="range" id="fSlider" min="0" max="10" step="0.1" value="2.5">
-                <input type="number" id="fInput" value="2.5" step="0.1" min="0">
-            </div>
-        </div>
-        <div class="control-group">
-            <label>Damping (z)</label>
-            <div class="input-row">
-                <input type="range" id="zSlider" min="0" max="2" step="0.05" value="0.65">
-                <input type="number" id="zInput" value="0.65" step="0.05" min="0">
-            </div>
-        </div>
-        <div class="control-group">
-            <label>Response (r)</label>
-            <div class="input-row">
-                <input type="range" id="rSlider" min="-2" max="2" step="0.05" value="1.0">
-                <input type="number" id="rInput" value="1.0" step="0.05">
-            </div>
-        </div>
-    </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>motionspring</title>
+    <style>
+      :root {
+        --bg: #f4eee4;
+        --ink: #14293d;
+        --muted: #425a6e;
+        --panel: #ffffffe3;
+        --line: #15344f22;
+        --accent: #0d7ca7;
+        --accent-soft: #d8edf5;
+        --warn: #d96c4d;
+      }
 
-    <script src="vector2.js"></script>
-    <script src="dynamics.js"></script>
-    <script src="script.js"></script>
-</body>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "IBM Plex Sans", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 12% 8%, #d9e9ec, transparent 45%),
+          radial-gradient(circle at 88% 10%, #f9ddd0, transparent 42%),
+          var(--bg);
+      }
+
+      main {
+        width: min(1140px, calc(100vw - 28px));
+        margin: 28px auto 46px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(30px, 4vw, 44px);
+        letter-spacing: -0.02em;
+      }
+
+      .subtitle {
+        margin: 8px 0 16px;
+        max-width: 760px;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.5;
+      }
+
+      .top-links {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+      }
+
+      .top-links a {
+        text-decoration: none;
+        color: var(--ink);
+        padding: 7px 11px;
+        border-radius: 9px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        font-size: 13px;
+      }
+
+      .config {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--panel);
+        padding: 14px;
+        margin-bottom: 16px;
+      }
+
+      .config-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .config-title h2 {
+        margin: 0;
+        font-size: 20px;
+      }
+
+      .config-title p {
+        margin: 0;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .config-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .control {
+        background: #ffffffbb;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px;
+      }
+
+      .control-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+        font-size: 13px;
+      }
+
+      .control output {
+        font-weight: 600;
+        color: #1c4f68;
+      }
+
+      input[type="range"] {
+        width: 100%;
+      }
+
+      .preset-row {
+        margin-top: 10px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .preset {
+        border: 1px solid var(--line);
+        background: #fff;
+        color: var(--ink);
+        border-radius: 999px;
+        padding: 7px 11px;
+        font: inherit;
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .preset.active {
+        background: var(--accent-soft);
+        border-color: #0f739a66;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 14px;
+      }
+
+      .demo {
+        border-radius: 15px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        padding: 14px;
+      }
+
+      .demo h3 {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      .demo p {
+        margin: 7px 0 12px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .value-line {
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 12px;
+        color: #254459;
+      }
+
+      .action-btn {
+        border: 1px solid var(--line);
+        background: #fff;
+        color: var(--ink);
+        border-radius: 10px;
+        padding: 8px 12px;
+        font: inherit;
+        font-size: 13px;
+        cursor: pointer;
+      }
+
+      .toggle-stage {
+        margin-top: 10px;
+        position: relative;
+        height: 176px;
+      }
+
+      .toggle-card {
+        position: absolute;
+        inset: 16px 14px;
+        padding: 18px 14px;
+        border-radius: 12px;
+        border: 1px solid #15354d4a;
+        background: #ffffff;
+        box-shadow: 0 14px 28px rgba(16, 43, 64, 0.2);
+        transform-origin: center center;
+        will-change: transform, box-shadow, border-color;
+        transition: opacity 180ms linear;
+      }
+
+      .toggle-card h4 {
+        margin: 0 0 8px;
+        font-size: 16px;
+      }
+
+      .toggle-card p {
+        margin: 0;
+        color: #3b5569;
+      }
+
+      .meter {
+        width: 100%;
+        height: 14px;
+        border-radius: 999px;
+        background: #d4e3ea;
+        overflow: hidden;
+      }
+
+      .fill {
+        height: 100%;
+        width: 50%;
+        background: var(--accent);
+      }
+
+      .surface {
+        position: relative;
+        height: 180px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: #fff;
+        overflow: hidden;
+        touch-action: none;
+      }
+
+      .dot,
+      .target-dot {
+        position: absolute;
+        border-radius: 999px;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+      }
+
+      .dot {
+        width: 28px;
+        height: 28px;
+        background: var(--accent);
+      }
+
+      .target-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--warn);
+      }
+
+      .footer {
+        margin-top: 14px;
+        font-size: 14px;
+        color: #274256;
+      }
+
+      code {
+        background: #13324c12;
+        border-radius: 6px;
+        padding: 2px 5px;
+      }
+
+      @media (max-width: 900px) {
+        .config-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .config-title {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+
+      @media (max-width: 640px) {
+        main {
+          width: calc(100vw - 18px);
+          margin-top: 18px;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+
+        .demo {
+          padding: 12px;
+        }
+
+        .value-line {
+          flex-wrap: wrap;
+        }
+
+        .surface {
+          height: 160px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>motionspring</h1>
+      <p class="subtitle">
+        Interactive demos for MotionSpring. Use the global controls to tune the spring behavior
+        across all demos on this page.
+      </p>
+
+      <nav class="top-links">
+        <a href="./README.md">README</a>
+        <a href="./docs/api.md">API</a>
+        <a href="./docs/demos.md">Demos</a>
+        <a href="./docs/publishing.md">Publishing</a>
+      </nav>
+
+      <section class="config">
+        <div class="config-title">
+          <h2>Global Spring Controls</h2>
+          <p>Applies to Toggle Card, Number Spring, and Mouse Follower demos.</p>
+        </div>
+
+        <div class="config-grid">
+          <label class="control" for="cfgFrequency">
+            <span class="control-row"><span>Frequency (f)</span><output id="cfgFrequencyOut">2.8</output></span>
+            <input id="cfgFrequency" type="range" min="0" max="10" step="0.1" value="2.8" />
+          </label>
+
+          <label class="control" for="cfgDamping">
+            <span class="control-row"><span>Damping (z)</span><output id="cfgDampingOut">0.75</output></span>
+            <input id="cfgDamping" type="range" min="0" max="2" step="0.01" value="0.75" />
+          </label>
+
+          <label class="control" for="cfgResponse">
+            <span class="control-row"><span>Response (r)</span><output id="cfgResponseOut">1.00</output></span>
+            <input id="cfgResponse" type="range" min="-2" max="2" step="0.01" value="1" />
+          </label>
+        </div>
+
+        <div class="preset-row">
+          <button class="preset" type="button" data-preset="snappy">Snappy</button>
+          <button class="preset active" type="button" data-preset="balanced">Balanced</button>
+          <button class="preset" type="button" data-preset="bouncy">Bouncy</button>
+        </div>
+      </section>
+
+      <section class="grid">
+        <article class="demo">
+          <h3>Toggle Card</h3>
+          <p>One spring value drives card scale, with visible overshoot above 1.0.</p>
+          <button id="toggleButton" class="action-btn" type="button">Close Card</button>
+          <div class="toggle-stage">
+            <section id="toggleCard" class="toggle-card">
+              <h4>Smooth State Change</h4>
+              <p>Scale uses spring dynamics and opacity uses a linear transition.</p>
+            </section>
+          </div>
+          <div class="value-line">
+            <span>Progress</span>
+            <strong id="toggleProgress">1.00</strong>
+          </div>
+        </article>
+
+        <article class="demo">
+          <h3>Number Spring</h3>
+          <p>Set a target value and watch the meter and number settle naturally.</p>
+          <label for="numberTarget">Target</label>
+          <input id="numberTarget" type="range" min="0" max="100" step="1" value="50" />
+          <div class="value-line">
+            <span>Target: <strong id="numberTargetValue">50</strong></span>
+            <span>Animated: <strong id="numberAnimatedValue">50.00</strong></span>
+          </div>
+          <div class="meter"><div id="numberFill" class="fill"></div></div>
+        </article>
+
+        <article class="demo">
+          <h3>Mouse Follower</h3>
+          <p>Move inside the surface and the follower tracks with smooth Vector2 motion.</p>
+          <div id="surface" class="surface">
+            <div id="followerDot" class="dot"></div>
+            <div id="targetDot" class="target-dot"></div>
+          </div>
+          <div class="value-line">
+            <span>X: <strong id="mouseX">0.0</strong></span>
+            <span>Y: <strong id="mouseY">0.0</strong></span>
+          </div>
+        </article>
+      </section>
+
+      <p class="footer">
+        Run locally: <code>npm install</code>, <code>npm test</code>, <code>npm run demo</code>.
+      </p>
+    </main>
+
+    <script type="module">
+      import { Vector2, createAnimator } from "./src/index.js";
+
+      const presets = {
+        snappy: { frequency: 4.5, damping: 0.9, response: 0.9 },
+        balanced: { frequency: 2.8, damping: 0.75, response: 1.0 },
+        bouncy: { frequency: 2.0, damping: 0.45, response: 1.25 },
+      };
+
+      const springConfig = {
+        frequency: Number(document.querySelector("#cfgFrequency").value),
+        damping: Number(document.querySelector("#cfgDamping").value),
+        response: Number(document.querySelector("#cfgResponse").value),
+      };
+
+      const cfgFrequency = document.querySelector("#cfgFrequency");
+      const cfgDamping = document.querySelector("#cfgDamping");
+      const cfgResponse = document.querySelector("#cfgResponse");
+      const cfgFrequencyOut = document.querySelector("#cfgFrequencyOut");
+      const cfgDampingOut = document.querySelector("#cfgDampingOut");
+      const cfgResponseOut = document.querySelector("#cfgResponseOut");
+
+      let toggleAnimator = null;
+      let numberAnimator = null;
+      let followerAnimator = null;
+
+      function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+      }
+
+      function syncConfigOutputs() {
+        cfgFrequencyOut.textContent = springConfig.frequency.toFixed(2);
+        cfgDampingOut.textContent = springConfig.damping.toFixed(2);
+        cfgResponseOut.textContent = springConfig.response.toFixed(2);
+      }
+
+      function applyGlobalSpring() {
+        if (toggleAnimator) {
+          toggleAnimator.setParams({
+            frequency: springConfig.frequency * 1.05,
+            damping: clamp(springConfig.damping * 0.55, 0, 2),
+            response: springConfig.response + 0.2,
+          });
+        }
+
+        if (numberAnimator) {
+          numberAnimator.setParams({
+            frequency: springConfig.frequency,
+            damping: springConfig.damping,
+            response: springConfig.response,
+          });
+        }
+
+        if (followerAnimator) {
+          followerAnimator.setParams({
+            frequency: springConfig.frequency,
+            damping: springConfig.damping,
+            response: springConfig.response,
+          });
+        }
+      }
+
+      function onConfigInput() {
+        springConfig.frequency = Number(cfgFrequency.value);
+        springConfig.damping = Number(cfgDamping.value);
+        springConfig.response = Number(cfgResponse.value);
+        syncConfigOutputs();
+        applyGlobalSpring();
+        setActivePreset(null);
+      }
+
+      cfgFrequency.addEventListener("input", onConfigInput);
+      cfgDamping.addEventListener("input", onConfigInput);
+      cfgResponse.addEventListener("input", onConfigInput);
+
+      function setActivePreset(name) {
+        document.querySelectorAll(".preset").forEach((button) => {
+          button.classList.toggle("active", button.dataset.preset === name);
+        });
+      }
+
+      function applyPreset(name) {
+        const preset = presets[name];
+        if (!preset) {
+          return;
+        }
+
+        springConfig.frequency = preset.frequency;
+        springConfig.damping = preset.damping;
+        springConfig.response = preset.response;
+
+        cfgFrequency.value = String(preset.frequency);
+        cfgDamping.value = String(preset.damping);
+        cfgResponse.value = String(preset.response);
+
+        syncConfigOutputs();
+        applyGlobalSpring();
+        setActivePreset(name);
+      }
+
+      document.querySelectorAll(".preset").forEach((button) => {
+        button.addEventListener("click", () => {
+          applyPreset(button.dataset.preset);
+        });
+      });
+
+      const toggleButton = document.querySelector("#toggleButton");
+      const toggleCard = document.querySelector("#toggleCard");
+      const toggleProgress = document.querySelector("#toggleProgress");
+      let toggleGoal = 1;
+
+      toggleAnimator = createAnimator({
+        initialValue: 1,
+        frequency: springConfig.frequency * 1.05,
+        damping: clamp(springConfig.damping * 0.55, 0, 2),
+        response: springConfig.response + 0.2,
+        updateSource: () => toggleGoal,
+        onUpdate: (value) => {
+          const v = clamp(value, 0, 1.35);
+          toggleCard.style.transform = `scale(${0.72 + v * 0.38})`;
+          toggleCard.style.boxShadow = `0 ${10 + v * 12}px ${20 + v * 18}px rgba(16, 43, 64, ${0.06 + v * 0.2})`;
+          toggleCard.style.borderColor = `rgba(21, 53, 77, ${0.2 + v * 0.32})`;
+          toggleProgress.textContent = v.toFixed(2);
+        },
+      });
+      toggleAnimator.start();
+
+      function syncToggleButton() {
+        toggleButton.textContent = toggleGoal > 0.5 ? "Close Card" : "Open Card";
+      }
+
+      toggleButton.addEventListener("click", () => {
+        toggleGoal = toggleGoal > 0.5 ? 0 : 1;
+        toggleCard.style.transition = "opacity 180ms linear";
+        toggleCard.style.opacity = toggleGoal > 0.5 ? "1" : "0";
+        syncToggleButton();
+      });
+      toggleCard.style.opacity = "1";
+      syncToggleButton();
+
+      const numberTargetInput = document.querySelector("#numberTarget");
+      const numberTargetValue = document.querySelector("#numberTargetValue");
+      const numberAnimatedValue = document.querySelector("#numberAnimatedValue");
+      const numberFill = document.querySelector("#numberFill");
+      let numberGoal = Number(numberTargetInput.value);
+
+      numberAnimator = createAnimator({
+        initialValue: numberGoal,
+        frequency: springConfig.frequency,
+        damping: springConfig.damping,
+        response: springConfig.response,
+        updateSource: () => numberGoal,
+        onUpdate: (value) => {
+          const v = clamp(value, 0, 100);
+          numberAnimatedValue.textContent = value.toFixed(2);
+          numberFill.style.width = `${v}%`;
+        },
+      });
+      numberAnimator.start();
+
+      numberTargetInput.addEventListener("input", () => {
+        numberGoal = Number(numberTargetInput.value);
+        numberTargetValue.textContent = String(numberGoal);
+      });
+
+      const surface = document.querySelector("#surface");
+      const followerDot = document.querySelector("#followerDot");
+      const targetDot = document.querySelector("#targetDot");
+      const mouseX = document.querySelector("#mouseX");
+      const mouseY = document.querySelector("#mouseY");
+
+      const surfaceRect = () => surface.getBoundingClientRect();
+      const initialRect = surfaceRect();
+      let pointer = new Vector2(initialRect.width / 2, initialRect.height / 2);
+
+      function placeDot(element, position) {
+        element.style.left = `${position.x}px`;
+        element.style.top = `${position.y}px`;
+      }
+
+      followerAnimator = createAnimator({
+        initialValue: pointer,
+        frequency: springConfig.frequency,
+        damping: springConfig.damping,
+        response: springConfig.response,
+        updateSource: () => pointer,
+        onUpdate: (position) => {
+          placeDot(followerDot, position);
+          mouseX.textContent = position.x.toFixed(1);
+          mouseY.textContent = position.y.toFixed(1);
+        },
+      });
+      followerAnimator.start();
+
+      function setPointer(clientX, clientY) {
+        const rect = surfaceRect();
+        pointer = new Vector2(
+          clamp(clientX - rect.left, 0, rect.width),
+          clamp(clientY - rect.top, 0, rect.height)
+        );
+        placeDot(targetDot, pointer);
+      }
+
+      placeDot(targetDot, pointer);
+      placeDot(followerDot, pointer);
+
+      surface.addEventListener("pointermove", (event) => {
+        setPointer(event.clientX, event.clientY);
+      });
+
+      surface.addEventListener("pointerdown", (event) => {
+        setPointer(event.clientX, event.clientY);
+      });
+
+      window.addEventListener("resize", () => {
+        const rect = surfaceRect();
+        pointer = new Vector2(clamp(pointer.x, 0, rect.width), clamp(pointer.y, 0, rect.height));
+        placeDot(targetDot, pointer);
+      });
+
+      syncConfigOutputs();
+      applyPreset("balanced");
+    </script>
+  </body>
 </html>

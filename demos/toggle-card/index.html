@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toggle Card Demo</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <a class="back" href="../../index.html">Back</a>
+      <h1>Toggle Card (Simple)</h1>
+      <p>Open/close animation driven by a scalar spring value from 0 to 1.</p>
+
+      <button id="toggle" type="button">Close Card</button>
+
+      <section id="card" class="card">
+        <h2>Spring-powered visibility</h2>
+        <p>
+          This demo maps one animated value to opacity, translation, and scale. It is useful for
+          menus, drawers, and collapsing panels.
+        </p>
+      </section>
+
+      <div class="value">Progress: <strong id="progress">1.00</strong></div>
+    </main>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

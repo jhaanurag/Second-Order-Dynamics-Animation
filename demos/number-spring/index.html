@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Number Spring Demo</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <a class="back" href="../../index.html">Back</a>
+      <h1>Number Spring</h1>
+      <p>Drag the target slider. The value animates with second-order dynamics.</p>
+
+      <div class="card">
+        <label for="target">Target</label>
+        <input id="target" type="range" min="0" max="100" step="1" value="50" />
+        <div class="value-row">
+          <span>Target: <strong id="targetValue">50</strong></span>
+          <span>Animated: <strong id="animatedValue">50.00</strong></span>
+        </div>
+        <div class="meter">
+          <div id="fill" class="fill"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <label for="f">Frequency (f)</label>
+        <input id="f" type="range" min="0" max="10" step="0.1" value="3" />
+
+        <label for="z">Damping (z)</label>
+        <input id="z" type="range" min="0" max="2" step="0.05" value="0.8" />
+
+        <label for="r">Response (r)</label>
+        <input id="r" type="range" min="-2" max="2" step="0.05" value="1.2" />
+      </div>
+    </main>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

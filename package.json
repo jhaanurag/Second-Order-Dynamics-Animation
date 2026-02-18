@@ -1,0 +1,50 @@
+{
+  "name": "motionspring",
+  "version": "0.1.0",
+  "description": "A small second-order dynamics animation library for numbers and vectors.",
+  "type": "module",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js",
+      "default": "./src/index.js"
+    }
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "test": "node --test",
+    "check": "npm test && npm pack --dry-run",
+    "demo": "python3 -m http.server 4173",
+    "prepack": "npm test",
+    "prepublishOnly": "npm run check"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jhaanurag/Second-Order-Dynamics-Animation.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jhaanurag/Second-Order-Dynamics-Animation/issues"
+  },
+  "homepage": "https://github.com/jhaanurag/Second-Order-Dynamics-Animation#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "animation",
+    "motion",
+    "spring",
+    "physics",
+    "second-order-dynamics"
+  ],
+  "license": "MIT"
+}
