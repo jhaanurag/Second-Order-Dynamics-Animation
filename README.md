@@ -78,7 +78,7 @@ Standalone demo folders:
 - `demos/number-spring`
 - `demos/mouse-follower`
 
-Run locally:
+Local demo server:
 
 ```bash
 npm run demo
@@ -92,28 +92,19 @@ Then open `http://localhost:4173`.
 - Demo guide: `docs/demos.md`
 - Publishing guide: `docs/publishing.md`
 
-## Development
+## Validation
 
 ```bash
 npm test
 ```
 
-Package validation (tests + pack dry run):
+Full package validation (tests + pack dry run):
 
 ```bash
 npm run check
 ```
 
-## Publish to npm
-
-1. Ensure you are logged in: `npm whoami`
-2. Bump version in `package.json`
-3. Run `npm run check`
-4. Publish: `npm publish`
-
-`publishConfig.access` is already set to `public` in `package.json`.
-
-## Notes for Production Use
+## Runtime Notes
 
 - Pass stable `deltaTime` values to `step(...)` in non-RAF environments.
 - Tune `frequency`, `damping`, and `response` based on interaction intent.

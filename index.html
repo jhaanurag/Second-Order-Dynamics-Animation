@@ -14,6 +14,7 @@
         --accent: #0d7ca7;
         --accent-soft: #d8edf5;
         --warn: #d96c4d;
+        --number-control-height: 212px;
       }
 
       * {
@@ -249,23 +250,22 @@
         justify-content: center;
         align-items: center;
         gap: 22px;
-        min-height: 242px;
+        min-height: calc(var(--number-control-height) + 10px);
         width: 100%;
         overflow: hidden;
       }
 
       .number-driver {
         width: 76px;
-        height: 232px;
-        display: grid;
-        place-items: center;
+        height: var(--number-control-height);
+        position: relative;
       }
 
       .ios-volume {
         --value: 50;
         --fill-height: calc(var(--value) * 1%);
         width: 76px;
-        height: 196px;
+        height: var(--number-control-height);
         border-radius: 24px;
         position: relative;
         overflow: hidden;
@@ -286,8 +286,15 @@
       }
 
       .number-target-vertical {
-        width: 210px;
-        transform: rotate(-90deg);
+        width: var(--number-control-height);
+        inline-size: var(--number-control-height);
+        height: 22px;
+        block-size: 22px;
+        max-width: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-90deg);
         transform-origin: center;
         -webkit-appearance: none;
         appearance: none;
@@ -390,6 +397,10 @@
       }
 
       @media (max-width: 640px) {
+        :root {
+          --number-control-height: 176px;
+        }
+
         main {
           width: calc(100vw - 18px);
           margin-top: 18px;
@@ -414,22 +425,22 @@
 
         .number-slider-wrap {
           gap: 14px;
-          min-height: 210px;
+          min-height: calc(var(--number-control-height) + 10px);
         }
 
         .number-driver {
           width: 64px;
-          height: 200px;
+          height: var(--number-control-height);
         }
 
         .ios-volume {
           width: 64px;
-          height: 168px;
+          height: var(--number-control-height);
           border-radius: 20px;
         }
 
         .number-target-vertical {
-          width: 178px;
+          width: var(--number-control-height);
         }
       }
     </style>
@@ -538,7 +549,7 @@
       </section>
 
       <p class="footer">
-        Run locally: <code>npm install</code>, <code>npm test</code>, <code>npm run demo</code>.
+        Development commands: <code>npm install</code>, <code>npm test</code>, <code>npm run demo</code>.
       </p>
     </main>
 
