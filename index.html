@@ -158,21 +158,30 @@
         border: 1px solid var(--line);
         background: var(--panel);
         padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
       }
 
       .demo h3 {
         margin: 0;
         font-size: 18px;
+        line-height: 1.2;
       }
 
       .demo p {
-        margin: 7px 0 12px;
+        margin: 4px 0 6px;
         font-size: 13px;
+        line-height: 1.4;
         color: var(--muted);
       }
 
+      .demo label {
+        font-weight: 600;
+      }
+
       .value-line {
-        margin-top: 10px;
+        margin-top: 8px;
         display: flex;
         justify-content: space-between;
         gap: 8px;
@@ -232,6 +241,99 @@
         height: 100%;
         width: 50%;
         background: var(--accent);
+      }
+
+      .number-slider-wrap {
+        margin-top: 2px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 22px;
+        min-height: 242px;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .number-driver {
+        width: 76px;
+        height: 232px;
+        display: grid;
+        place-items: center;
+      }
+
+      .ios-volume {
+        --value: 50;
+        --fill-height: calc(var(--value) * 1%);
+        width: 76px;
+        height: 196px;
+        border-radius: 24px;
+        position: relative;
+        overflow: hidden;
+        background: #2f2f33;
+        border: 1px solid #00000026;
+        box-shadow:
+          inset 0 1px 0 #ffffff14,
+          0 16px 24px #0b24351f;
+      }
+
+      .ios-volume .volume-fill {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: var(--fill-height);
+        background: #f3f2ec;
+      }
+
+      .number-target-vertical {
+        width: 210px;
+        transform: rotate(-90deg);
+        transform-origin: center;
+        -webkit-appearance: none;
+        appearance: none;
+        background: transparent;
+      }
+
+      .number-target-vertical::-webkit-slider-runnable-track {
+        height: 6px;
+        border-radius: 999px;
+        background: #cfd7de;
+      }
+
+      .number-target-vertical::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 22px;
+        height: 22px;
+        margin-top: -8px;
+        border-radius: 50%;
+        border: 2px solid #ffffff;
+        background: #6f7782;
+        box-shadow: 0 1px 3px #00000033;
+      }
+
+      .number-target-vertical::-moz-range-track {
+        height: 6px;
+        border-radius: 999px;
+        background: #cfd7de;
+      }
+
+      .number-target-vertical::-moz-range-thumb {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 2px solid #ffffff;
+        background: #6f7782;
+        box-shadow: 0 1px 3px #00000033;
+      }
+
+      .number-demo {
+        text-align: center;
+      }
+
+      .number-demo .value-line {
+        margin-top: 4px;
+        justify-content: center;
+        gap: 24px;
       }
 
       .surface {
@@ -309,6 +411,26 @@
         .surface {
           height: 160px;
         }
+
+        .number-slider-wrap {
+          gap: 14px;
+          min-height: 210px;
+        }
+
+        .number-driver {
+          width: 64px;
+          height: 200px;
+        }
+
+        .ios-volume {
+          width: 64px;
+          height: 168px;
+          border-radius: 20px;
+        }
+
+        .number-target-vertical {
+          width: 178px;
+        }
       }
     </style>
   </head>
@@ -374,16 +496,31 @@
           </div>
         </article>
 
-        <article class="demo">
+        <article class="demo number-demo">
           <h3>Number Spring</h3>
           <p>Set a target value and watch the meter and number settle naturally.</p>
           <label for="numberTarget">Target</label>
-          <input id="numberTarget" type="range" min="0" max="100" step="1" value="50" />
+          <div class="number-slider-wrap">
+            <div class="number-driver">
+              <input
+                id="numberTarget"
+                class="number-target-vertical"
+                type="range"
+                min="0"
+                max="100"
+                step="1"
+                value="50"
+                aria-label="Target volume"
+              />
+            </div>
+            <div class="ios-volume" id="numberVolumeControl">
+              <div class="volume-fill"></div>
+            </div>
+          </div>
           <div class="value-line">
             <span>Target: <strong id="numberTargetValue">50</strong></span>
             <span>Animated: <strong id="numberAnimatedValue">50.00</strong></span>
           </div>
-          <div class="meter"><div id="numberFill" class="fill"></div></div>
         </article>
 
         <article class="demo">
@@ -546,10 +683,11 @@
       syncToggleButton();
 
       const numberTargetInput = document.querySelector("#numberTarget");
+      const numberVolumeControl = document.querySelector("#numberVolumeControl");
       const numberTargetValue = document.querySelector("#numberTargetValue");
       const numberAnimatedValue = document.querySelector("#numberAnimatedValue");
-      const numberFill = document.querySelector("#numberFill");
       let numberGoal = Number(numberTargetInput.value);
+      numberVolumeControl.style.setProperty("--value", String(numberGoal));
 
       numberAnimator = createAnimator({
         initialValue: numberGoal,
@@ -560,7 +698,7 @@
         onUpdate: (value) => {
           const v = clamp(value, 0, 100);
           numberAnimatedValue.textContent = value.toFixed(2);
-          numberFill.style.width = `${v}%`;
+          numberVolumeControl.style.setProperty("--value", String(v));
         },
       });
       numberAnimator.start();
