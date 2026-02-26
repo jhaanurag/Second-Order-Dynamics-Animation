@@ -22,6 +22,21 @@ npm install motionspring
 
 ## Quick Start
 
+Mouse follower:
+
+```js
+import { createMouseFollower } from "motionspring";
+
+const follower = createMouseFollower({
+  element: document.querySelector(".circle"),
+  frequency: 3.5,
+  damping: 0.8,
+  response: 1,
+});
+
+follower.start();
+```
+
 Number spring:
 
 ```js
@@ -41,21 +56,6 @@ const animator = createAnimator({
 });
 
 animator.start();
-```
-
-Mouse follower:
-
-```js
-import { createMouseFollower } from "motionspring";
-
-const follower = createMouseFollower({
-  element: document.querySelector(".circle"),
-  frequency: 3.5,
-  damping: 0.8,
-  response: 1,
-});
-
-follower.start();
 ```
 
 ## Vector Example
@@ -107,8 +107,6 @@ Then open `http://localhost:4173`.
 ## Docs
 
 - API reference: `docs/api.md`
-- Demo guide: `docs/demos.md`
-- Publishing guide: `docs/publishing.md`
 
 ## Validation
 

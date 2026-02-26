@@ -2,6 +2,18 @@
 
 ## Quick Start
 
+Mouse follower:
+
+```js
+import { createMouseFollower } from "motionspring";
+
+const follower = createMouseFollower({
+  element: document.querySelector(".circle"),
+});
+
+follower.start();
+```
+
 Number spring:
 
 ```js
@@ -18,18 +30,6 @@ const animator = createAnimator({
 });
 
 animator.start();
-```
-
-Mouse follower:
-
-```js
-import { createMouseFollower } from "motionspring";
-
-const follower = createMouseFollower({
-  element: document.querySelector(".circle"),
-});
-
-follower.start();
 ```
 
 ## `Vector2`
