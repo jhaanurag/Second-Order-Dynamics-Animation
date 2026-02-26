@@ -1,5 +1,37 @@
 # API
 
+## Quick Start
+
+Number spring:
+
+```js
+import { createAnimator } from "motionspring";
+
+let target = 100;
+
+const animator = createAnimator({
+  initialValue: 0,
+  updateSource: () => target,
+  onUpdate: (value) => {
+    element.textContent = value.toFixed(2);
+  },
+});
+
+animator.start();
+```
+
+Mouse follower:
+
+```js
+import { createMouseFollower } from "motionspring";
+
+const follower = createMouseFollower({
+  element: document.querySelector(".circle"),
+});
+
+follower.start();
+```
+
 ## `Vector2`
 
 ```js
@@ -57,3 +89,29 @@ Returned animator methods:
 - `setValue(value)`
 - `getValue()`
 - `getState()`
+
+## `createMouseFollower(options)`
+
+Creates a pointer-driven spring follower for a DOM element.
+
+Options:
+
+- `element` (required DOM element with `style`)
+- `pointerTarget` (event target, default: `window`)
+- `eventName` (default: `"pointermove"`)
+- `initialPosition` (`Vector2 | {x,y}`, default: viewport center)
+- `frequency` (`number`, default: `3.5`)
+- `damping` (`number`, default: `0.8`)
+- `response` (`number`, default: `1`)
+- `center` (`boolean`, default: `true`)
+- `offset` (`Vector2 | {x,y}`, default: `{0,0}`)
+- `onUpdate` (`(position) => void`)
+
+Returned methods:
+
+- `start()`
+- `stop()`
+- `dispose()`
+- `setTarget(position)`
+- `setParams({ frequency?, damping?, response? })`
+- `getValue()`

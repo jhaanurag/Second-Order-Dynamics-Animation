@@ -52,3 +52,30 @@ export interface Animator<T = number> {
 }
 
 export function createAnimator<T = number>(options?: AnimatorOptions<T>): Animator<T>;
+
+export interface MouseFollowerOptions {
+  element: { style: { transform: string }; offsetWidth: number; offsetHeight: number };
+  pointerTarget?: {
+    addEventListener(type: string, callback: (event: { clientX: number; clientY: number }) => void): void;
+    removeEventListener(type: string, callback: (event: { clientX: number; clientY: number }) => void): void;
+  } | null;
+  eventName?: string;
+  initialPosition?: Vector2 | { x: number; y: number } | null;
+  frequency?: number;
+  damping?: number;
+  response?: number;
+  center?: boolean;
+  offset?: Vector2 | { x: number; y: number };
+  onUpdate?: ((value: Vector2) => void) | null;
+}
+
+export interface MouseFollower {
+  start(): void;
+  stop(): void;
+  dispose(): void;
+  setTarget(value: Vector2 | { x: number; y: number }): void;
+  setParams(params: { frequency?: number; damping?: number; response?: number }): void;
+  getValue(): Vector2;
+}
+
+export function createMouseFollower(options: MouseFollowerOptions): MouseFollower;

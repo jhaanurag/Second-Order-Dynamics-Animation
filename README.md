@@ -18,8 +18,11 @@ npm install motionspring
 - `SecondOrderDynamics`
 - `Vector2`
 - `createAnimator`
+- `createMouseFollower`
 
 ## Quick Start
+
+Number spring:
 
 ```js
 import { createAnimator } from "motionspring";
@@ -38,6 +41,21 @@ const animator = createAnimator({
 });
 
 animator.start();
+```
+
+Mouse follower:
+
+```js
+import { createMouseFollower } from "motionspring";
+
+const follower = createMouseFollower({
+  element: document.querySelector(".circle"),
+  frequency: 3.5,
+  damping: 0.8,
+  response: 1,
+});
+
+follower.start();
 ```
 
 ## Vector Example
