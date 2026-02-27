@@ -1,6 +1,6 @@
 {
   "name": "motionspring",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A lightweight spring animation library with precise control over motion dynamics.",
   "type": "module",
   "main": "./src/index.js",
