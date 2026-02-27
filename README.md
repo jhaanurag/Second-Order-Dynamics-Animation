@@ -1,6 +1,6 @@
 # motionspring
 
-A lightweight npm package for second-order spring animation of numbers and vectors.
+A lightweight spring animation library with precise control over motion dynamics.
 
 ## Requirements
 
