@@ -1,7 +1,7 @@
 {
   "name": "motionspring",
   "version": "0.1.0",
-  "description": "A small second-order dynamics animation library for numbers and vectors.",
+  "description": "A lightweight spring animation library with precise control over motion dynamics.",
   "type": "module",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
@@ -32,7 +32,7 @@
   "bugs": {
     "url": "https://github.com/jhaanurag/Second-Order-Dynamics-Animation/issues"
   },
-  "homepage": "https://github.com/jhaanurag/Second-Order-Dynamics-Animation#readme",
+  "homepage": "https://jhaanurag.github.io/Second-Order-Dynamics-Animation/",
   "publishConfig": {
     "access": "public"
   },
